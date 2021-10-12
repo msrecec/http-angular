@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { map } from "rxjs/operators";
 import { keyframes } from "@angular/animations";
+import { Post } from "./post.model";
 
 @Component({
   selector: "app-root",
@@ -17,10 +18,10 @@ export class AppComponent implements OnInit {
     this.fetchPosts();
   }
 
-  onCreatePost(postData: { title: string; content: string }) {
+  onCreatePost(postData: Post) {
     // Send Http request
     this.http
-      .post(
+      .post<{ name: string }>(
         "https://ng-complete-guide-36c07-default-rtdb.europe-west1.firebasedatabase.app/posts.json",
         postData
       )
@@ -41,12 +42,12 @@ export class AppComponent implements OnInit {
 
   private fetchPosts() {
     this.http
-      .get(
+      .get<{ [key: string]: Post }>(
         "https://ng-complete-guide-36c07-default-rtdb.europe-west1.firebasedatabase.app/posts.json"
       )
       .pipe(
         map((responseData) => {
-          const postsArray = [];
+          const postsArray: Post[] = [];
           for (const key in responseData) {
             if (responseData.hasOwnProperty(key)) {
               postsArray.push({ ...responseData[key], id: key });
