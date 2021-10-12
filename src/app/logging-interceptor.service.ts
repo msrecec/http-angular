@@ -12,16 +12,22 @@ import { tap } from "rxjs/operators";
 @Injectable({
   providedIn: "root",
 })
-export class AuthInterceptorService implements HttpInterceptor {
+export class LoggingInterceptorService implements HttpInterceptor {
   constructor() {}
 
   intercept(
     req: HttpRequest<any>,
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
-    const modifiedRequest = req.clone({
-      headers: req.headers.append("Auth", "xyz"),
-    });
-    return next.handle(modifiedRequest);
+    console.log("Outgoing request");
+    console.log(req.url);
+    return next.handle(req).pipe(
+      tap((event) => {
+        if (event.type === HttpEventType.Response) {
+          console.log("Incoming response");
+          console.log(event.body);
+        }
+      })
+    );
   }
 }
