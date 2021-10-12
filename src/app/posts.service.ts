@@ -49,6 +49,7 @@ export class PostsService {
           headers: new HttpHeaders({ "Custom-Header": "Hello" }),
           // params: new HttpParams().set("print", "pretty"),
           params: searchParams,
+          responseType: "json",
         }
       )
       .pipe(
